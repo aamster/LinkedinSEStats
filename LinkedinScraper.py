@@ -55,7 +55,7 @@ class LinkedinScraper:
 
         if sample_num is not None:
             np.random.seed(1234)
-            profile_hrefs = np.random.choice(profile_hrefs, size=sample_num)
+            profile_hrefs = np.random.choice(profile_hrefs, size=sample_num, replace=False)
 
         for href in profile_hrefs:
             experiences_, education_ = self._parse_profile(href=href)
