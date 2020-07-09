@@ -39,6 +39,8 @@ class DataCleaner:
         address_country_map = locator.add_country(addresses=addresses)
         self.education['Country'] = self.education['location'].map(address_country_map)
 
+        self.clean_missing_countries()
+
         self.experiences.to_csv('experiences.csv', index=False)
         self.education.to_csv('education.csv', index=False)
 
@@ -54,6 +56,26 @@ class DataCleaner:
         to_ = pd.to_datetime(to_)
 
         return from_, to_
+
+    def clean_missing_countries(self):
+        school_country_map = {
+            'Colegio Santa Maria': 'Brazil',
+            'Sabanci University': 'Turkey',
+            'Southeast University': 'China',
+            'Thapar Institute of Engineering and Technology': 'India',
+            'Tianjin University': 'China',
+            'University of Tehran': 'Iran',
+            'Sharif University of Technology': 'Iran',
+            'PES institute of technology': 'India',
+            'Seoul National University': 'South Korea',
+            'National Institute of Technology Karnataka': 'India',
+            'Narayana PU College, Bangalore': 'India',
+            '浙江大学': 'China',
+            'University of Seoul': 'South Korea',
+            'Beihang University': 'China'
+        }
+        self.education.loc[self.education['school'].isin(school_country_map), 'Country'] = \
+            self.education.loc[self.education['school'].isin(school_country_map), 'school'].map(school_country_map)
 
 def main():
     education = pd.read_csv('education.csv')

@@ -61,7 +61,9 @@ class Locator:
         countries = set(countries['Country'])
 
         def get_country(address, address_country_map):
-            address_split = re.sub(r'[^\w\s]', '', address).split()
+            address_split = address.split(',')
+            # address_split = re.sub(r'[^\w\s]', '', address).split(',')
+            address_split = [re.sub(r'\d', '', s) for s in address_split]
             address_split = [s.strip() for s in address_split]
             for s in address_split:
                 if s in countries:
@@ -80,14 +82,14 @@ class Locator:
 def main():
     school_locator = Locator()
     education = pd.read_csv('education.csv')
-    schools = education['school'].unique()
-    school_location_map = school_locator.scrape(places=schools)
-    education['location'] = education['school'].map(school_location_map)
-    education.to_csv('education.csv', index=False)
-    # addresses = pd.Series(education['location'].unique())
-    # address_country_map = school_locator.add_country(addresses=addresses)
-    # education['Country'] = education['location'].map(address_country_map)
+    # schools = education['school'].unique()
+    # school_location_map = school_locator.scrape(places=schools)
+    # education['location'] = education['school'].map(school_location_map)
     # education.to_csv('education.csv', index=False)
+    addresses = pd.Series(education['location'].unique())
+    address_country_map = school_locator.add_country(addresses=addresses)
+    education['Country'] = education['location'].map(address_country_map)
+    education.to_csv('education.csv', index=False)
 
 
 if __name__ == '__main__':
