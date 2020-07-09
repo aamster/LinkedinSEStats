@@ -40,7 +40,7 @@ class LinkedinScraper:
         """
         self.get("https://www.linkedin.com/company/google/people/?facetGeoRegion=us%3A0&keywords=software%20engineer")
 
-        time.sleep(3)
+        time.sleep(30)
 
         if read_profiles_from_file and os.path.exists('/tmp/profile_hrefs_full.csv'):
             profile_hrefs = pd.read_csv('/tmp/profile_hrefs_full.csv')["0"].values
@@ -65,7 +65,7 @@ class LinkedinScraper:
         experiences = pd.concat(experiences, ignore_index=True)
         education = pd.concat(education, ignore_index=True)
 
-        education = self._add_location(school_hrefs=self.school_hrefs, degree_df=education)
+        # education = self._add_location(school_hrefs=self.school_hrefs, degree_df=education)
 
         experiences.to_csv('experiences.csv', index=False)
         education.to_csv('education.csv', index=False)
@@ -262,12 +262,12 @@ class ExperienceSection:
         except NoSuchElementException:
             pass
 
-        parent = experience.find_element_by_xpath('../..')
-        try:
-            description = parent.find_element_by_css_selector(
-                'div.pv-entity__extra-details p.pv-entity__description').text
-        except NoSuchElementException:
-            pass
+        # parent = experience.find_element_by_xpath('../..')
+        # try:
+        #     description = parent.find_element_by_css_selector(
+        #         'div.pv-entity__extra-details p.pv-entity__description').text
+        # except NoSuchElementException:
+        #     pass
 
         experience = Experience(title=title, company=company, date_range=date_range, location=location,
                                 description=description)
@@ -407,7 +407,7 @@ class EducationSection:
 
 def main():
     linkedin_scraper = LinkedinScraper()
-    linkedin_scraper.scrape(sample_num=500)
+    linkedin_scraper.scrape(sample_num=5)
 
 
 if __name__ == '__main__':
